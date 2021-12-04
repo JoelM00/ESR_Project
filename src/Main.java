@@ -5,77 +5,47 @@ import java.net.Socket;
 public class Main {
     public static void main(String[] args) throws IOException {
 
-        if (!args[0].equals("client")) {
+        String[] vizinhos = new String[args.length-1];
+        if (args.length > 1) {
+            System.arraycopy(args, 1, vizinhos, 0, args.length - 1);
+        }
+
+        if (!args[0].equals("cliente")) {
             ServerSocket ss = new ServerSocket(50000);
             String origemIP = null;
-            Controlador c = new Controlador(0,origemIP,args);
 
+            Controlador c = new Controlador(0,origemIP,vizinhos);
 
-            new Thread(() -> {
-                while (true) {
-                    try {
-                        Socket s = ss.accept();
-                        Gestor g = new Gestor(s);
-                        c.addIP(s.getInetAddress().getHostAddress());
+            new Thread(new AtendimentoWorker(ss,c)).start();
 
-                        new Thread(new ReaderWorker(c,g)).start();
-                        new Thread(new WriterWorker(c,g)).start();
-
-                    } catch (IOException e) {
-                        System.out.println("@ -> Erro no atendimento");
-                    }
-                }
-            }).start();
-
-
-            for (int i = 1; i < args.length-1; i++) {
+            //Cria conexoes com os seus vizinhos
+            for (String v : vizinhos) {
                 Socket s = null;
                 try {
-                    s = new Socket(args[i],50000);
+                    s = new Socket(v,50000);
                     Gestor g = new Gestor(s);
 
                     new Thread(new ReaderWorker(c,g)).start();
                     new Thread(new WriterWorker(c,g)).start();
+
                 } catch (Exception e) {
                     System.out.println("@ -> Erro de conexao: Intermediario");
-                    c.removeIP(s.getInetAddress().getHostAddress());
+                    if (s!=null) c.removeIP(s.getInetAddress().getHostAddress());
                 }
             }
 
-            if (args[0].equals("server")) {
-                new Thread(() -> {
-                    int flagFlood = 0;
-                    while (true) {
-                        c.enviaFlood(flagFlood);
-                        flagFlood++;
-
-                        if (flagFlood==100000) flagFlood=0;
-
-                        try {
-                            Thread.sleep(2000);
-                        } catch (Exception e){
-                            System.out.println("@ -> Erro ao adormecer thread");
-                        }
-                    }
-                }).start();
-
-                new Thread(() -> {
-                    String texto = "aaaaaaaaaaaaaaaaaaa";
-                    while (true) {
-                        c.enviaDados(texto);
-                        try {
-                            Thread.sleep(3000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }).start();
-
+            //Se for servidor de conteudo
+            // -> Cria uma thread para fazer flood de tempo em tempo
+            // -> Cria uma thread que ira enviar conteudo
+             if (args[0].equals("servidor")) {
+                new Thread(new FloodWorker(c)).start();
+                new Thread(new FluxoWorker(c)).start();
             }
 
-        } else if (args[0].equals("client")) {
+        //Se for cliente cria uma conexao com o seu vizinho, etc
+        } else if (args[0].equals("cliente")) {
             try {
-                Socket s = new Socket(args[1], 50000);
+                Socket s = new Socket(vizinhos[0], 50000);
                 Gestor g = new Gestor(s);
                 Pacote p = new Pacote(0,"".getBytes());
                 g.send(p);
@@ -86,10 +56,10 @@ public class Main {
                     String dados = new String(p.dados);
                     System.out.println(" -> Pacote recebido: "+dados);
                 }
+
             } catch (Exception e) {
                 System.out.println("@ -> Erro de conexao: Cliente -> Servidor");
             }
-
         } else {
             System.out.println(" -> Input incorreto!");
         }

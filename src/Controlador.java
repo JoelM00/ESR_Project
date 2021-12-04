@@ -1,5 +1,4 @@
 import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
@@ -22,7 +21,7 @@ public class Controlador {
         this.l = new ReentrantLock();
     }
 
-    public void addIP(String vizinhoIP) throws UnknownHostException {
+    public void addIP(String vizinhoIP) {
         tabela.put(vizinhoIP,false);
         buffers.put(vizinhoIP,new Buffer());
     }
