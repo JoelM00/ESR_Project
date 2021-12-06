@@ -20,23 +20,23 @@ public class Main {
             // -> Cria uma thread para fazer flood de tempo em tempo
             // -> Cria uma thread que ira enviar conteudo
 
-            //if (args[0].equals("servidor")) {
-            c =  new Controlador(0,origemIP,true,vizinhos);
+            if (args[0].equals("servidor")) {
+                c =  new Controlador(0,origemIP,true,vizinhos);
 
-            //System.out.println("# -> Criada Thread de Flood");
-            //new Thread(new FloodWorker(c)).start();
+                System.out.println("# -> Criada Thread de Flood");
+                new Thread(new FloodWorker(c)).start();
 
-            System.out.println("# -> Criada Thread de Fluxo");
-            new Thread(new FluxoWorker(c)).start();
-            //} else {
-            //    c =  new Controlador(0,origemIP,false,new String[0]);
-            //}
+                System.out.println("# -> Criada Thread de Fluxo");
+                new Thread(new FluxoWorker(c)).start();
+            } else {
+                c =  new Controlador(0,origemIP,false,vizinhos);
+            }
 
             System.out.println("# -> Criada Thread para atendimento");
             new Thread(new AtendimentoWorker(ss,c)).start();
 
 
-            /**
+
             //Cria conexoes com os seus vizinhos
             for (String v : vizinhos) {
                 Socket s = null;
@@ -53,7 +53,6 @@ public class Main {
                 }
             }
 
-    **/
     //Se for cliente cria uma conexao com o seu vizinho, etc
         } else if (args[0].equals("cliente")) {
             try {
