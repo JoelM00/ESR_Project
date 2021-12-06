@@ -16,9 +16,7 @@ public class Buffer {
     }
 
     public void fazFlood(int flagFlood) {
-        String flagString = Integer.toString(flagFlood);
-        byte flagBytes = Byte.parseByte(flagString);
-        Pacote p = new Pacote(2,flagBytes);
+        Pacote p = new Pacote(2,Integer.toString(flagFlood).getBytes());
         addPacote(p);
     }
 

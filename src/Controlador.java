@@ -17,8 +17,8 @@ public class Controlador {
         this.eServidor = eServidor;
         this.tabela = new HashMap<>();
         this.buffers = new HashMap<>();
-        for (int i = 1; i<vizinhos.length; i++) {
-            addIP(vizinhos[i]);
+        for (String s : vizinhos) {
+            addIP(s);
         }
         this.l = new ReentrantLock();
     }
@@ -26,6 +26,7 @@ public class Controlador {
     public void addIP(String vizinhoIP) {
         tabela.put(vizinhoIP,false);
         buffers.put(vizinhoIP,new Buffer());
+        System.out.println("IP: "+vizinhoIP+" adicionado");
     }
 
     public void removeIP(String vizinhoIP) {
@@ -44,30 +45,36 @@ public class Controlador {
     }
 
     public void reencaminhaFlood(String vizinhoIP, Pacote p) {
-        if (!eServidor) {
-            int flagFlood = Integer.parseInt(new String(p.dados));
+        try {
+            if (!eServidor) {
+                int flagFlood = Integer.parseInt(new String(p.dados));
 
-            if (flagFlood != epocaTabela) {
-                System.out.println(" -> Atualizado id da tabela");
-                epocaTabela = flagFlood;
-
-                for (Map.Entry<String, Buffer> e : buffers.entrySet()) {
-                    if (!e.getKey().equals(vizinhoIP)) {
-                        e.getValue().addPacote(p);
-                        System.out.println(" -> Efetuado flood para: " + e.getKey());
+                if (flagFlood != epocaTabela) {
+                    epocaTabela = flagFlood;
+                    System.out.println(" -> Epoca da tabela atualizada para: "+epocaTabela);
+                    System.out.println(buffers);
+                    for (Map.Entry<String, Buffer> e : buffers.entrySet()) {
+                        if (!e.getKey().equals(vizinhoIP)) {
+                            e.getValue().addPacote(p);
+                            System.out.println(" -> Efetuado flood para: " + e.getKey());
+                        } else {
+                            System.out.println(" -> Vizinho de onde veio o flood");
+                        }
                     }
-                }
-                if (!origemIP.equals(vizinhoIP)) {
-                    origemIP = vizinhoIP;
-                    tabela.replace(vizinhoIP, false);
+                    if (!origemIP.equals(vizinhoIP)) {
+                        origemIP = vizinhoIP;
+                        tabela.replace(vizinhoIP, false);
+                    } else {
+                        System.out.println("@ -> Stream provedora nao mudou");
+                    }
                 } else {
-                    System.out.println("@ -> Stream provedora nao mudou");
+                    System.out.println("@ -> Flag de Flood ja recebida");
                 }
             } else {
-                System.out.println("@ -> Flag de Flood ja recebida");
+                System.out.println("@ -> Sou o servidor nao faco reemcaminhamento de flood");
             }
-        } else {
-            System.out.println("@ -> Sou o servidor nao faco reemcaminhamento de flood");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
