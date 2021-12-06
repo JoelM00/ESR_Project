@@ -80,7 +80,7 @@ public class Controlador {
 
     public void ativa(String vizinhoIP) {
         if (vizinhoIP.equals(origemIP)) {
-            System.out.println(" -> origemIP igual ao vizinhoIP");
+            System.out.println(" -> origemIP igual ao vizinhoIP (ativa)");
             return;
         }
         if (tabela.get(vizinhoIP)) {
@@ -91,6 +91,8 @@ public class Controlador {
             if (!temAtiva() && origemIP!=null) {
                 Pacote p = new Pacote(0, "".getBytes());
                 buffers.get(origemIP).addPacote(p);
+
+                System.out.println("@ -> Pacote de desativacao adicionado ao buffer (ativa)");
             }
         }
         tabela.replace(vizinhoIP,true);
@@ -98,14 +100,18 @@ public class Controlador {
 
     public void desativa(String vizinhoIP) {
         if (vizinhoIP.equals(origemIP)) {
-            System.out.println("@ -> Recebido ativa de onde era suposto estar a receber stream");
+            System.out.println("@ -> Recebido ativa de onde era suposto estar a receber stream (desativa)");
         }
         if (!tabela.get(vizinhoIP)) {
             System.out.println("@ -> Stream já desativada");
         }
-        if (!temAtiva() && origemIP!=null) {
-            Pacote p = new Pacote(3,"".getBytes());
-            buffers.get(origemIP).addPacote(p);
+        if (!eServidor) {
+            if (!temAtiva() && origemIP != null) {
+                Pacote p = new Pacote(3, "".getBytes());
+                buffers.get(origemIP).addPacote(p);
+
+                System.out.println("@ -> Pacote de desativacao adicionado ao buffer (desativa)");
+            }
         }
         tabela.replace(vizinhoIP,false);
     }
@@ -114,7 +120,7 @@ public class Controlador {
         for (Map.Entry<String,Buffer> e : buffers.entrySet()) {
             if (tabela.get(e.getKey())) {
                 e.getValue().fazDados(dados);
-                System.out.println(" -> Pacote de dados adicionado pelo Servidor");
+                System.out.println(" -> Pacote de dados adicionado pelo Servidor a todos os buffer de rotas ativas");
             }
         }
     }
@@ -122,16 +128,18 @@ public class Controlador {
     public void reencaminhaDados(String vizinhoIP,Pacote dados) {
         if (!eServidor) {
             if (!vizinhoIP.equals(origemIP)) {
-                System.out.println("@ -> Recebido pacote de IP imprevisto");
+                System.out.println("@ -> Recebido pacote de IP imprevisto (ReencDados)");
 
                 Pacote p = new Pacote(3, "".getBytes());
                 buffers.get(vizinhoIP).addPacote(p);
+
+                System.out.println("@ -> Pacote de desativacao adicionado ao buffer (reemcDados)");
 
             } else {
                 for (Map.Entry<String, Buffer> e : buffers.entrySet()) {
                     if (tabela.get(e.getKey())) {
                         e.getValue().addPacote(dados);
-                        System.out.println(" -> Pacote adicionado a lista para envio");
+                        System.out.println(" -> Pacote de dados adicionado ao buffer");
                     }
                 }
             }

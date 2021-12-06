@@ -11,10 +11,11 @@ public class WriterWorker implements Runnable {
     public void run() {
         try {
             while (true) {
-                System.out.println(" -> Pacote enviado pelo socket");
                 Buffer b = c.getBuffer(g.s.getInetAddress().getHostAddress());
                 Pacote p = b.removePacote();
                 g.send(p);
+
+                System.out.println(" -> Pacote com flag: "+p.flag+"enviado pelo socket");
             }
 
         } catch (Exception e) {
