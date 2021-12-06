@@ -19,27 +19,17 @@ public class Gestor {
     }
 
     public void send(Pacote p) throws IOException {
-        try {
-            rl.lock();
-            out.writeInt(p.flag);
-            out.writeInt(p.dados.length);
-            out.write(p.dados);
-            out.flush();
-        } finally {
-            rl.unlock();
-        }
+        out.writeInt(p.flag);
+        out.writeInt(p.dados.length);
+        out.write(p.dados);
+        out.flush();
     }
 
     public Pacote receive() throws IOException {
-        try {
-            wl.lock();
-            int flag = in.readInt();
-            int size = in.readInt();
-            byte[] dados = new byte[size];
-            in.readFully(dados);
-            return new Pacote(flag,dados);
-        } finally {
-            wl.unlock();
-        }
+        int flag = in.readInt();
+        int size = in.readInt();
+        byte[] dados = new byte[size];
+        in.readFully(dados);
+        return new Pacote(flag,dados);
     }
 }

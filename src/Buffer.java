@@ -7,11 +7,12 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Buffer {
     List<Pacote> pacotes;
     ReentrantLock l;
-    Condition c = l.newCondition();
+    Condition c;
 
     public Buffer() {
         this.pacotes = new ArrayList<>();
         this.l = new ReentrantLock();
+        this.c = l.newCondition();
     }
 
     public void fazFlood(int flagFlood) {

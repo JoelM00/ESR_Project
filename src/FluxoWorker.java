@@ -8,7 +8,7 @@ public class FluxoWorker implements Runnable {
     @Override
     public void run() {
         try {
-            String texto = "aaaaaaaaaaaaaaaaaaa";
+            String texto = "STRING DE TESTE PARA ENVIO";
             while (true) {
                 c.enviaDados(texto);
 

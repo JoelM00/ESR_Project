@@ -15,19 +15,29 @@ public class ReaderWorker implements Runnable {
                 String ip = g.s.getInetAddress().getHostAddress();
                 switch (p.flag) {
                     case 0:
+                        System.out.println(" -> Flag 0 recebida");
                         c.ativa(ip);
+                        break;
                     case 1:
+                        System.out.println(" -> Flag 1 recebida");
                         c.reencaminhaDados(ip,p);
+                        break;
                     case 2:
+                        System.out.println(" -> Flag 2 recebida");
                         c.reencaminhaFlood(ip,p);
+                        break;
                     case 3:
+                        System.out.println(" -> Flag 3 recebida");
                         c.desativa(ip);
+                        break;
                     default:
                         System.out.println("@ -> Erro na flag");
+                        break;
                 }
             }
 
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("@ -> Erro ao ler pacotes do socket");
         }
     }

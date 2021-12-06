@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -13,11 +14,29 @@ public class Main {
         if (!args[0].equals("cliente")) {
             ServerSocket ss = new ServerSocket(50000);
             String origemIP = null;
+            Controlador c = null;
 
-            Controlador c = new Controlador(0,origemIP,vizinhos);
+            //Se for servidor de conteudo
+            // -> Cria uma thread para fazer flood de tempo em tempo
+            // -> Cria uma thread que ira enviar conteudo
 
+            //if (args[0].equals("servidor")) {
+            c =  new Controlador(0,origemIP,true,vizinhos);
+
+            //System.out.println("# -> Criada Thread de Flood");
+            //new Thread(new FloodWorker(c)).start();
+
+            System.out.println("# -> Criada Thread de Fluxo");
+            new Thread(new FluxoWorker(c)).start();
+            //} else {
+            //    c =  new Controlador(0,origemIP,false,new String[0]);
+            //}
+
+            System.out.println("# -> Criada Thread para atendimento");
             new Thread(new AtendimentoWorker(ss,c)).start();
 
+
+            /**
             //Cria conexoes com os seus vizinhos
             for (String v : vizinhos) {
                 Socket s = null;
@@ -34,15 +53,8 @@ public class Main {
                 }
             }
 
-            //Se for servidor de conteudo
-            // -> Cria uma thread para fazer flood de tempo em tempo
-            // -> Cria uma thread que ira enviar conteudo
-             if (args[0].equals("servidor")) {
-                new Thread(new FloodWorker(c)).start();
-                new Thread(new FluxoWorker(c)).start();
-            }
-
-        //Se for cliente cria uma conexao com o seu vizinho, etc
+    **/
+    //Se for cliente cria uma conexao com o seu vizinho, etc
         } else if (args[0].equals("cliente")) {
             try {
                 Socket s = new Socket(vizinhos[0], 50000);
@@ -51,6 +63,8 @@ public class Main {
                 g.send(p);
 
                 //Falta arranjar forma de parar o cliente e mandar flag desativa
+                System.out.println("# -> Espero pacotes de fluxo");
+
                 while (true) {
                     p = g.receive();
                     String dados = new String(p.dados);
@@ -63,6 +77,7 @@ public class Main {
         } else {
             System.out.println(" -> Input incorreto!");
         }
+
     }
 }
 

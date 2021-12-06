@@ -16,9 +16,13 @@ public class AtendimentoWorker implements Runnable {
             while (true) {
 
                 Socket s = ss.accept();
+
+                System.out.println(" -> Recebi um pedido");
+
                 Gestor g = new Gestor(s);
                 c.addIP(s.getInetAddress().getHostAddress());
 
+                System.out.println(" -> Criadas thread para leitura e escrita no socket");
                 new Thread(new ReaderWorker(c,g)).start();
                 new Thread(new WriterWorker(c,g)).start();
 
