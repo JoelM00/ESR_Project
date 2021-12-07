@@ -17,7 +17,7 @@ public class MainServidor {
             ServerSocket ss = new ServerSocket(50000);
             String origemIP = null;
             Controlador c = null;
-            String[] vizinhos = new String[2];
+            String[] vizinhos = new String[1];
             vizinhos[0] = "192.168.1.7";
 
             //Se for servidor de conteudo

@@ -19,7 +19,7 @@ public class WriterWorker implements Runnable {
             }
 
         } catch (Exception e) {
-            System.out.println("@ -> Erro ao escrever pacotes no socket");
+            System.out.println("@ -> Socket fechado");
         }
     }
 }

@@ -51,17 +51,17 @@ public class Controlador {
 
                 if (flagFlood != epocaTabela) {
                     epocaTabela = flagFlood;
-                    System.out.println(" -> Epoca da tabela atualizada para: "+epocaTabela);
+                    System.out.println(" -> Epoca da tabela atualizada para: " + epocaTabela);
                     System.out.println(buffers);
                     for (Map.Entry<String, Buffer> e : buffers.entrySet()) {
                         if (!e.getKey().equals(vizinhoIP)) {
                             e.getValue().addPacote(p);
                             System.out.println(" -> Efetuado flood para: " + e.getKey());
                         } else {
-                            System.out.println(" -> Vizinho de onde veio o flood");
+                            System.out.println(" -> Não reemcaminha pois é o Vizinho de onde veio o flood: "+e.getKey());
                         }
                     }
-                    if (!origemIP.equals(vizinhoIP)) {
+                    if (origemIP==null || !origemIP.equals(vizinhoIP)) {
                         origemIP = vizinhoIP;
                         tabela.replace(vizinhoIP, false);
                     } else {
@@ -74,6 +74,7 @@ public class Controlador {
                 System.out.println("@ -> Sou o servidor nao faco reemcaminhamento de flood");
             }
         } catch (Exception e) {
+            System.out.println(" ##################################### ");
             e.printStackTrace();
         }
     }
@@ -99,7 +100,7 @@ public class Controlador {
                 Pacote p = new Pacote(0, "".getBytes());
                 buffers.get(origemIP).addPacote(p);
 
-                System.out.println("@ -> Pacote de desativacao adicionado ao buffer (ativa)");
+                System.out.println("@ -> Pacote de ativacao adicionado ao buffer (ativa)");
             }
         }
         tabela.replace(vizinhoIP,true);
@@ -107,11 +108,12 @@ public class Controlador {
 
     public void desativa(String vizinhoIP) {
         if (vizinhoIP.equals(origemIP)) {
-            System.out.println("@ -> Recebido ativa de onde era suposto estar a receber stream (desativa)");
+            System.out.println("@ -> Recebido desativa de onde era suposto estar a receber stream (desativa)");
         }
         if (!tabela.get(vizinhoIP)) {
             System.out.println("@ -> Stream já desativada");
         }
+        tabela.replace(vizinhoIP,false);
         if (!eServidor) {
             if (!temAtiva() && origemIP != null) {
                 Pacote p = new Pacote(3, "".getBytes());
@@ -120,7 +122,6 @@ public class Controlador {
                 System.out.println("@ -> Pacote de desativacao adicionado ao buffer (desativa)");
             }
         }
-        tabela.replace(vizinhoIP,false);
     }
 
     public void enviaDados(String dados) {

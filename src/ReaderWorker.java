@@ -9,25 +9,26 @@ public class ReaderWorker implements Runnable {
 
     @Override
     public void run() {
+        String ip = null;
         try {
             while (true) {
                 Pacote p = g.receive();
-                String ip = g.s.getInetAddress().getHostAddress();
+                ip = g.s.getInetAddress().getHostAddress();
                 switch (p.flag) {
                     case 0:
-                        System.out.println(" -> Flag 0 recebida");
+                        System.out.println("$$$ -> Flag 0 recebida");
                         c.ativa(ip);
                         break;
                     case 1:
-                        System.out.println(" -> Flag 1 recebida");
+                        System.out.println("$$$ -> Flag 1 recebida");
                         c.reencaminhaDados(ip,p);
                         break;
                     case 2:
-                        System.out.println(" -> Flag 2 recebida");
+                        System.out.println("$$$ -> Flag 2 recebida");
                         c.reencaminhaFlood(ip,p);
                         break;
                     case 3:
-                        System.out.println(" -> Flag 3 recebida");
+                        System.out.println("$$$ -> Flag 3 recebida");
                         c.desativa(ip);
                         break;
                     default:
@@ -37,8 +38,11 @@ public class ReaderWorker implements Runnable {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("@ -> Erro ao ler pacotes do socket");
+            if (ip!=null) {
+                c.removeIP(ip);
+                System.out.println("@ -> IP removido");
+            }
+            System.out.println("@ -> Socket fechado!");
         }
     }
 }

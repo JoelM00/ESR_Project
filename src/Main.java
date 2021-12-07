@@ -1,7 +1,9 @@
+import javafx.scene.transform.Scale;
+
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -55,19 +57,37 @@ public class Main {
 
     //Se for cliente cria uma conexao com o seu vizinho, etc
         } else if (args[0].equals("cliente")) {
+
             try {
                 Socket s = new Socket(vizinhos[0], 50000);
                 Gestor g = new Gestor(s);
                 Pacote p = new Pacote(0,"".getBytes());
                 g.send(p);
 
-                //Falta arranjar forma de parar o cliente e mandar flag desativa
+                Runtime.getRuntime().addShutdownHook(new Thread() {
+                    @Override
+                    public void run() {
+
+                        Pacote p = new Pacote(3,"".getBytes());
+                        try {
+                            g.send(p);
+                            System.out.println("# -> Pacote de desativacao enviado");
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+
                 System.out.println("# -> Espero pacotes de fluxo");
 
                 while (true) {
                     p = g.receive();
-                    String dados = new String(p.dados);
-                    System.out.println(" -> Pacote recebido: "+dados);
+                    if (p.flag == 1) {
+                        String dados = new String(p.dados);
+                        System.out.println(" -> Pacote recebido: "+dados);
+                    }
                 }
 
             } catch (Exception e) {

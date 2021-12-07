@@ -16,7 +16,7 @@ public class FloodWorker implements Runnable {
 
                 if (flagFlood == 100000) flagFlood = 0;
 
-                Thread.sleep(2000);
+                Thread.sleep(4000);
 
             }
         } catch (Exception e) {
