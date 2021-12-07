@@ -7,15 +7,17 @@ public class FluxoWorker implements Runnable {
 
     @Override
     public void run() {
+        int cont = 0;
         try {
-            String texto = "STRING DE TESTE PARA ENVIO";
             while (true) {
+                String texto = "STRING DE TESTE PARA ENVIO"+cont++;
+
                 c.enviaDados(texto);
 
-                Thread.sleep(3000);
+                Thread.sleep(7000);
             }
         } catch (Exception e) {
-            System.out.println("@ -> Erro na thread que enviar fluxo");
+            System.out.println("@ -> ERRO no FLUXO WORKER");
         }
     }
 }

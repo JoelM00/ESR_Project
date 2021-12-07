@@ -15,13 +15,23 @@ public class Buffer {
         this.c = l.newCondition();
     }
 
+    public void fazDestiva() {
+        Pacote p = new Pacote(3,"".getBytes());
+        addPacote(p);
+    }
+
+    public void fazAtiva() {
+        Pacote p = new Pacote(0,"".getBytes());
+        addPacote(p);
+    }
+
     public void fazFlood(int flagFlood) {
         Pacote p = new Pacote(2,Integer.toString(flagFlood).getBytes());
         addPacote(p);
     }
 
     public void fazDados(String dados) {
-        Pacote p = new Pacote(1,dados.getBytes(StandardCharsets.UTF_8));
+        Pacote p = new Pacote(1,dados.getBytes());
         addPacote(p);
     }
 

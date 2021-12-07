@@ -16,11 +16,11 @@ public class FloodWorker implements Runnable {
 
                 if (flagFlood == 100000) flagFlood = 0;
 
-                Thread.sleep(4000);
+                Thread.sleep(7000);
 
             }
         } catch (Exception e) {
-            System.out.println("@ -> Erro na thread de Flood");
+            System.out.println("@ -> ERRO no FLOOD WORKER");
         }
     }
 }

@@ -15,7 +15,7 @@ public class WriterWorker implements Runnable {
                 Pacote p = b.removePacote();
                 g.send(p);
 
-                System.out.println(" -> Pacote com flag: "+p.flag+" e conteudo: "+new String(p.dados)+" enviado");
+                //System.out.println(" -> Pacote com flag: "+p.flag+" e conteudo: "+new String(p.dados)+" enviado");
             }
 
         } catch (Exception e) {

@@ -16,23 +16,23 @@ public class ReaderWorker implements Runnable {
                 ip = g.s.getInetAddress().getHostAddress();
                 switch (p.flag) {
                     case 0:
-                        System.out.println("$$$ -> Flag 0 recebida");
+                        System.out.println("$$$ -> Flag 0 recebida de: "+ip);
                         c.ativa(ip);
                         break;
                     case 1:
-                        System.out.println("$$$ -> Flag 1 recebida");
+                        System.out.println("$$$ -> Flag 1 recebida de: "+ip);
                         c.reencaminhaDados(ip,p);
                         break;
                     case 2:
-                        System.out.println("$$$ -> Flag 2 recebida");
+                        System.out.println("$$$ -> Flag 2 recebida de: "+ip);
                         c.reencaminhaFlood(ip,p);
                         break;
                     case 3:
-                        System.out.println("$$$ -> Flag 3 recebida");
+                        System.out.println("$$$ -> Flag 3 recebida de: "+ip);
                         c.desativa(ip);
                         break;
                     default:
-                        System.out.println("@ -> Erro na flag");
+                        System.out.println("@ -----> Erro na flag");
                         break;
                 }
             }
@@ -40,7 +40,7 @@ public class ReaderWorker implements Runnable {
         } catch (Exception e) {
             if (ip!=null) {
                 c.removeIP(ip);
-                System.out.println("@ -> IP removido");
+                System.out.println("@ -> IP removido: "+ip);
             }
             System.out.println("@ -> Socket fechado!");
         }
