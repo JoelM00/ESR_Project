@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ESR_Project:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ESR_Project_jar</output-path>
+    <root id="archive" name="ESR_Project.jar">
+      <element id="module-output" name="ESR_Project" />
+    </root>
+  </artifact>
+</component>
