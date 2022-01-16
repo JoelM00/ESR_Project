@@ -1,0 +1,36 @@
+https://stackoverflow.com/questions/4674006/set-specific-bit-in-byte
+
+Use the bitwise OR (|) and AND (&) operators. To set a bit, namely turn the bit at pos to 1:
+
+my_byte = my_byte | (1 << pos);   // longer version, or
+my_byte |= 1 << pos;              // shorthand
+
+To un-set a bit, or turn it to 0:
+
+my_byte = my_byte & ~(1 << pos);  // longer version, or
+my_byte &= ~(1 << pos);           // shorthand
+
+
+
+
+
+
+
+
+        underlay.addEdge(0,1000,true);
+        underlay.addEdge(1000,1002,true);
+        underlay.addEdge(1000,1001,true);
+        underlay.addEdge(1002,1003,true);
+        underlay.addEdge(1002,1004,true);
+        underlay.addEdge(1001,1005,true);
+
+        System.out.println("Main.Graph:\n"
+                + underlay.toString());
+
+        nodeStatus = new HashMap<>();
+        nodeStatus.put(1000,"Off");
+        nodeStatus.put(1001,"Off");
+        nodeStatus.put(1002,"Off");
+        nodeStatus.put(1003,"Off");
+        nodeStatus.put(1004,"Off");
+        nodeStatus.put(1005,"Off");
