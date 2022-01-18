@@ -35,6 +35,11 @@ public class Buffer {
         addPacote(p);
     }
 
+    public void fazIpBack(String ip){
+        Pacote p = new Pacote(4,ip.getBytes());
+        addPacote(p);
+    }
+
     public void addPacote(Pacote dados) {
         try {
             l.lock();

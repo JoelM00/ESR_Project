@@ -32,12 +32,20 @@ public class Main {
             } else {
                 System.out.println("###  SOU INTERMEDIARIO");
                 c =  new Controlador(0,origemIP,false,vizinhos);
+
+                //Thread responsável por criação de novas rotas caso nodo desapareça.
+                Controlador finalC = c;
+                Runtime.getRuntime().addShutdownHook(new Thread() {
+                    @Override
+                    public void run() {
+                        System.out.println("### Enviando BackUp");
+                        finalC.sendIpback();
+                    }
+                });
             }
 
             System.out.println("# -> Criada Thread para atendimento");
             new Thread(new AtendimentoWorker(ss,c)).start();
-
-
 
             //Cria conexoes com os seus vizinhos
             for (String v : vizinhos) {
@@ -79,7 +87,6 @@ public class Main {
                     }
                 });
 
-
                 System.out.println("# -> Espero pacotes de fluxo");
 
                 while (true) {
@@ -104,3 +111,4 @@ public class Main {
 // 1 -> Pacote dados
 // 2 -> Pacote flood
 // 3 -> Pacote desativacao
+// 4 -> Pacote AddIpBackUp

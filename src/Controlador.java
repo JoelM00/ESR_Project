@@ -32,6 +32,15 @@ public class Controlador {
         }finally { l.unlock();}
     }
 
+    public void addIPAtivo(String vizinhoIP) {
+        try {
+            l.lock();
+            tabela.put(vizinhoIP, true);
+            buffers.put(vizinhoIP, new Buffer());
+            System.out.println("IP: " + vizinhoIP + " adicionado");
+        }finally { l.unlock();}
+    }
+
     public void removeIP(String vizinhoIP) {
         try {
             l.lock();
@@ -96,7 +105,8 @@ public class Controlador {
                 //System.out.println("@ -> Sou o servidor nao faco reemcaminhamento de flood");
             }
         } catch (Exception e) {
-            System.out.println("@ -> ERRO REENCAMINHA FLOOD");
+            System.out.println(" ##################################### ");
+            e.printStackTrace();
         }
         finally {l.unlock();}
 }
@@ -201,4 +211,20 @@ public class Controlador {
             l.unlock();
         }
     }
+
+    public void sendIpback (){
+        System.out.println(tabela.toString());
+        if (temAtiva() && origemIP!=null){
+            for (Map.Entry<String, Boolean> e : tabela.entrySet()) {
+                if (e.getValue()) {
+                    buffers.get(origemIP).fazIpBack(e.getKey());
+                }
+            }
+        }
+    }
+
+    public boolean containsIp(String ip){
+        return tabela.containsKey(ip);
+    }
+
 }
